@@ -22,7 +22,7 @@ A SQL pool provides the compute used to run these queries. Synapse supports two 
 
 Synapse separates compute from storage. Compute performs query processing, while storage holds the data. This separation allows processing capacity to change independently of stored data.
 
-![Synapse SQL architecture showing dedicated and serverless SQL pools](docs/images/sql-architecture.png)
+![Synapse SQL architecture showing dedicated and serverless SQL pools](images/sql-architecture.png)
 
 *Source: [Microsoft Learn - Synapse SQL architecture](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/overview-architecture).*
 
@@ -89,7 +89,7 @@ The **managed resource group** holds supporting resources that Synapse manages f
 
 The two groups separate project resources from service-managed supporting resources. They are not separate groups for dedicated and serverless SQL pools.
 
-![Workspace creation showing the resource group, workspace name, and region](docs/images/workspace-basics.png)
+![Workspace creation showing the resource group, workspace name, and region](images/workspace-basics.png)
 
 *The resource group is selected, and the optional managed resource group name is left blank.*
 
@@ -97,7 +97,7 @@ The two groups separate project resources from service-managed supporting resour
 
 A workspace requires a **default ADLS Gen2 storage account and file system**. The file system is a container within that account. The default account stores workspace data such as Spark table data and Spark application logs. This setup uses `managevksynapse` with the file system `managesynapsefile`. [Default workspace storage](https://learn.microsoft.com/en-us/azure/synapse-analytics/quickstart-create-workspace).
 
-![Default ADLS Gen2 account and file system selected for the workspace](docs/images/workspace-storage.png)
+![Default ADLS Gen2 account and file system selected for the workspace](images/workspace-storage.png)
 
 *The default account and file system selected during workspace creation.*
 
@@ -148,7 +148,7 @@ A **dimension table** describes entities such as products. A **fact table** stor
 
 Create a dedicated SQL pool from the workspace's SQL pool settings, select a performance level, and wait for provisioning to finish. Connect the script to that pool's database before running the table statements.
 
-Script: [distributed tables.sql](sql/distributed%20tables.sql)
+Script: [distributed tables.sql](distributed%20tables.sql)
 
 The script creates `round_table`, inserts one sample row, and creates `gold.dim_product` and `gold.facttable`. The last two tables demonstrate their definitions without loading a complete dataset.
 
@@ -202,7 +202,7 @@ Create a user database on the **Built-in** serverless SQL pool. Select this data
 
 ## 14. Database master key and database scoped credential
 
-Script: setup statements in [openrowset.sql](sql/openrowset.sql).
+Script: setup statements in [openrowset.sql](openrowset.sql).
 
 ### Database master key
 
@@ -235,7 +235,7 @@ A **linked service** stores connection settings for Synapse Studio and data inte
 
 ## 16. OPENROWSET
 
-Script: [openrowset.sql](sql/openrowset.sql).
+Script: [openrowset.sql](openrowset.sql).
 
 `OPENROWSET` reads external files and returns their contents as rows for a SQL query. A persistent table does not need to be created first.
 
@@ -263,7 +263,7 @@ The query uses these settings:
 
 ## 17. External file formats
 
-An **external file format** defines how external data is read or written. The format definitions are created in [openrowset.sql](sql/openrowset.sql).
+An **external file format** defines how external data is read or written. The format definitions are created in [openrowset.sql](openrowset.sql).
 
 `csv_format` uses `DELIMITEDTEXT`, a comma as the field separator, and `FIRST_ROW = 2` to skip the header. These settings must match the input file. An incorrect separator can cause a whole line to be read into one column.
 
@@ -271,7 +271,7 @@ An **external file format** defines how external data is read or written. The fo
 
 ## 18. External tables in serverless SQL
 
-Script: [Create_Ext_Tables.sql](sql/Create_Ext_Tables.sql).
+Script: [Create_Ext_Tables.sql](Create_Ext_Tables.sql).
 
 An external table defines columns over files at a specified location. Its definition includes the column names and data types, location, external data source, and external file format.
 
@@ -287,7 +287,7 @@ This script defines all columns as `VARCHAR(4000)`, a variable-length text type.
 
 ## 19. CETAS: Create External Table As Select
 
-Script: [CETAS.sql](sql/CETAS.sql).
+Script: [CETAS.sql](CETAS.sql).
 
 **CETAS** exports the result of a `SELECT` query to files and creates an external table over the output. In this project, it reads the revenue CSV with `OPENROWSET`, writes the result as Parquet, and creates `revenue_cetas`.
 
@@ -310,7 +310,7 @@ CETAS requires permission to write to the output location. Use a fresh location 
 
 ## 20. Views in serverless SQL
 
-Script: [Views.sql](sql/Views.sql).
+Script: [Views.sql](Views.sql).
 
 A **view** stores a SQL query definition under a name. The `revenue_view` definition contains the `OPENROWSET` query over the original CSV.
 
@@ -332,13 +332,13 @@ The Parquet output is used as input for two loading methods: `COPY INTO` and an 
 
 Resume the dedicated pool and select its database. The required database objects must be created there because the serverless database's objects are separate.
 
-Script: [External_Res.sql](sql/External_Res.sql).
+Script: [External_Res.sql](External_Res.sql).
 
 This file contains the master key, `vkcreds`, an HTTPS external data source, and `parquet_format`. The later external-table exercise uses a separate ABFSS data source defined in `Polybase_CTAS.sql`.
 
 ### COPY INTO
 
-Script: [copyinto.sql](sql/copyinto.sql).
+Script: [copyinto.sql](copyinto.sql).
 
 `COPY INTO` loads rows from external files into an existing dedicated table. The script creates `copy_into_table` with round-robin distribution and loads Parquet files from `raw/cetas_revenue` using managed identity.
 
@@ -350,7 +350,7 @@ The file's `SELECT` appears before the load. Run it again after `COPY INTO` to i
 
 ### PolyBase approach with CTAS
 
-Script: [Polybase_CTAS.sql](sql/Polybase_CTAS.sql).
+Script: [Polybase_CTAS.sql](Polybase_CTAS.sql).
 
 This method creates an external table over the Parquet files, then loads its query result into a new dedicated table using **Create Table As Select (CTAS)**.
 
