@@ -22,7 +22,7 @@ A SQL pool provides the compute used to run these queries. Synapse supports two 
 
 Synapse separates compute from storage. Compute performs query processing, while storage holds the data. This separation allows processing capacity to change independently of stored data.
 
-![Synapse SQL architecture showing dedicated and serverless SQL pools](images/sql-architecture.svg)
+![Synapse SQL architecture showing dedicated and serverless SQL pools](images/sql-architecture.png)
 
 *Source: [Microsoft Learn - Synapse SQL architecture](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/overview-architecture).*
 
@@ -89,17 +89,17 @@ The **managed resource group** holds supporting resources that Synapse manages f
 
 The two groups separate project resources from service-managed supporting resources. They are not separate groups for dedicated and serverless SQL pools.
 
-![Illustration of workspace creation showing the resource group, workspace name, and region](images/workspace-basics.svg)
+![Workspace creation showing the resource group, workspace name, and region](images/workspace-basics.png)
 
-*Illustration of workspace basics. The resource group is selected, and the optional managed resource group name is left blank.*
+*The resource group is selected, and the optional managed resource group name is left blank.*
 
 ### Default storage account and external storage account
 
 A workspace requires a **default ADLS Gen2 storage account and file system**. The file system is a container within that account. The default account stores workspace data such as Spark table data and Spark application logs. This setup uses `managevksynapse` with the file system `managesynapsefile`. [Default workspace storage](https://learn.microsoft.com/en-us/azure/synapse-analytics/quickstart-create-workspace).
 
-![Illustration of default ADLS Gen2 account and file system selected for the workspace](images/workspace-storage.svg)
+![Default ADLS Gen2 account and file system selected for the workspace](images/workspace-storage.png)
 
-*Illustration of the default account and file system selected during workspace creation.*
+*The default account and file system selected during workspace creation.*
 
 The **external storage account**, `vkdatalake`, holds the data used by the SQL exercises. Its `raw` container contains the input CSV under `revenue` and the exported Parquet under `cetas_revenue`.
 
